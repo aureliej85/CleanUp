@@ -1,6 +1,7 @@
 package com.cleanup.todoc.ui;
 
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cleanup.todoc.R;
+import com.cleanup.todoc.datas.TaskDao;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
@@ -88,6 +91,10 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
 
+
+    public TaskDao taskDao;
+    public Task task;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +113,10 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 showAddTaskDialog();
             }
         });
+
+
+
+        Log.e("Main Activity", "onCreate");
     }
 
     @Override
@@ -135,7 +146,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
+        //tasks.remove(task);
+        Log.e("Main Activity", "onDeleteTask");
+        taskDao.deleteTask(task);
         updateTasks();
     }
 
@@ -145,6 +158,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param dialogInterface the current displayed dialog
      */
     private void onPositiveButtonClick(DialogInterface dialogInterface) {
+        Log.e("Main Activity", "onPositiveButtonClick: ");
+
         // If dialog is open
         if (dialogEditText != null && dialogSpinner != null) {
             // Get the name of the task
@@ -162,12 +177,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
             // If both project and name of the task have been set
             else if (taskProject != null) {
-                // TODO: Replace this by id of persisted task
-                long id = (long) (Math.random() * 50000);
+
+                //long id = (long) (Math.random() * 50000);
 
 
                 Task task = new Task(
-                        id,
                         taskProject.getId(),
                         taskName,
                         new Date().getTime()
@@ -182,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 dialogInterface.dismiss();
             }
         }
-        // If dialog is aloready closed
+        // If dialog is already closed
         else {
             dialogInterface.dismiss();
         }
@@ -192,6 +206,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Shows the Dialog for adding a Task
      */
     private void showAddTaskDialog() {
+        Log.e("Main activity", "showAddTaskDialog: ");
+
         final AlertDialog dialog = getAddTaskDialog();
 
         dialog.show();
@@ -208,7 +224,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        tasks.add(task);
+        Log.e("Main Activity", "addTask: ");
+        //tasks.add(task);
+        taskDao.insertTask(task);
         updateTasks();
     }
 
@@ -216,6 +234,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Updates the list of tasks in the UI
      */
     private void updateTasks() {
+        Log.e("Main Activity", "updateTasks: ");
+
         if (tasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
@@ -248,6 +268,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     @NonNull
     private AlertDialog getAddTaskDialog() {
+        Log.e("Main activity", "getAddTaskDialog: ");
+
         final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this, R.style.Dialog);
 
         alertBuilder.setTitle(R.string.add_task);
@@ -288,6 +310,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Sets the data of the Spinner with projects to associate to a new task
      */
     private void populateDialogSpinner() {
+        Log.e("Main Activity", "populateDialogSpinner: ");
+
         final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, allProjects);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         if (dialogSpinner != null) {
