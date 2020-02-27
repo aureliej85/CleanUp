@@ -20,13 +20,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cleanup.todoc.R;
+import com.cleanup.todoc.datas.ProjectDao;
 import com.cleanup.todoc.datas.TaskDao;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.datas.DatabaseClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -93,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
 
     public TaskDao taskDao;
+    public ProjectDao projectDao;
     public Task task;
 
     @Override
@@ -100,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        taskDao = DatabaseClient.getInstance(this).getAppDatabase().taskDao();
+        projectDao = DatabaseClient.getInstance(this).getAppDatabase().projectDao();
 
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
@@ -114,7 +122,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
         });
 
-
+        //task = new Task();
+        getTasks();
+        getProjects();
 
         Log.e("Main Activity", "onCreate");
     }
@@ -151,6 +161,21 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         taskDao.deleteTask(task);
         updateTasks();
     }
+
+    private void getTasks() {
+        Log.e("Main Activity", "getTasks");
+        //tasks.add(task);
+        Executor myExecutor = Executors.newSingleThreadExecutor();
+        myExecutor.execute(()->taskDao.getAllTasks());
+    }
+
+    private void getProjects(){
+        Log.e("Main Activity", "getProject");
+        //tasks.add(task);
+        Executor myExecutor = Executors.newSingleThreadExecutor();
+        myExecutor.execute(()->projectDao.getProjects());
+    }
+
 
     /**
      * Called when the user clicks on the positive button of the Create Task Dialog.
@@ -226,7 +251,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void addTask(@NonNull Task task) {
         Log.e("Main Activity", "addTask: ");
         //tasks.add(task);
-        taskDao.insertTask(task);
+        Executor myExecutor = Executors.newSingleThreadExecutor();
+        myExecutor.execute(()->taskDao.insertTask(task));
+        //taskDao.insertTask(task);
         updateTasks();
     }
 
@@ -234,7 +261,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Updates the list of tasks in the UI
      */
     private void updateTasks() {
-        Log.e("Main Activity", "updateTasks: ");
+        Log.e("Main Activity", "updateTasks");
+
 
         if (tasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);

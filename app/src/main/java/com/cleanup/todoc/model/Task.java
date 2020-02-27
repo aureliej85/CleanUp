@@ -16,11 +16,11 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
  *
  * @author Gaëtan HERFRAY
  */
-@Entity(tableName = "tasks",
+@Entity(tableName = "tasks"/*,
         foreignKeys = @ForeignKey(entity = Project.class,
                 parentColumns = "id",
                 childColumns = "projectId",
-                onDelete = CASCADE))
+                onDelete = CASCADE)*/)
 public class Task {
     /**
      * The unique identifier of the task
@@ -61,6 +61,9 @@ public class Task {
         this.setName(name);
         this.setCreationTimestamp(creationTimestamp);
     }
+
+    @Ignore
+    public Task(){}
 
     public Task(long projectId, @NonNull String name, long creationTimestamp) {
         this.setProjectId(projectId);
