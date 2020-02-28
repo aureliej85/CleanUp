@@ -17,19 +17,19 @@ public class Project {
      * The unique identifier of the project
      */
     @PrimaryKey
-    private final long id;
+    private long id;
 
     /**
      * The name of the project
      */
     @NonNull
-    private final String name;
+    private String name;
 
     /**
      * The hex (ARGB) code of the color associated to the project
      */
     @ColorInt
-    private final int color;
+    private int color;
 
     /**
      * Instantiates a new Project.
@@ -102,6 +102,18 @@ public class Project {
     public int getColor() {
         return color;
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setName(@NonNull String name) {
+        this.name = name;
+    }
+
+    //public void setColor(int color) {
+      //  this.color = color;
+    //}
 
     @Override
     @NonNull

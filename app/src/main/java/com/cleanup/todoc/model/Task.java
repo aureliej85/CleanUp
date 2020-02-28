@@ -1,5 +1,6 @@
 package com.cleanup.todoc.model;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
@@ -19,7 +20,8 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 @Entity(tableName = "tasks"/*,
         foreignKeys = @ForeignKey(entity = Project.class,
                 parentColumns = "id",
-                childColumns = "projectId")*/)
+                childColumns = "project_id",
+                onDelete = CASCADE)*/)
 public class Task {
     /**
      * The unique identifier of the task
@@ -30,6 +32,7 @@ public class Task {
     /**
      * The unique identifier of the project associated to the task
      */
+    @ColumnInfo(name = "project_id", index = true)
     private long projectId;
 
     /**
@@ -48,22 +51,10 @@ public class Task {
     /**
      * Instantiates a new Task.
      *
-     * @param id                the unique identifier of the task to set
      * @param projectId         the unique identifier of the project associated to the task to set
      * @param name              the name of the task to set
      * @param creationTimestamp the timestamp when the task has been created to set
      */
-    @Ignore
-    public Task(long id, long projectId, @NonNull String name, long creationTimestamp) {
-        this.setId(id);
-        this.setProjectId(projectId);
-        this.setName(name);
-        this.setCreationTimestamp(creationTimestamp);
-    }
-
-    @Ignore
-    public Task(){}
-
     public Task(long projectId, @NonNull String name, long creationTimestamp) {
         this.setProjectId(projectId);
         this.setName(name);
@@ -84,10 +75,6 @@ public class Task {
      *
      * @param id the unique idenifier of the task to set
      */
-    /*private void setId(long id) {
-        this.id = id;
-    }*/
-
     public void setId(long id) {
         this.id = id;
     }
@@ -139,6 +126,14 @@ public class Task {
         this.creationTimestamp = creationTimestamp;
     }
 
+    public long getProjectId() {
+        return projectId;
+    }
+
+    public long getCreationTimestamp() {
+        return creationTimestamp;
+    }
+
     /**
      * Comparator to sort task from A to Z
      */
@@ -178,15 +173,4 @@ public class Task {
             return (int) (left.creationTimestamp - right.creationTimestamp);
         }
     }
-
-
-    public long getProjectId() {
-        return projectId;
-    }
-
-    public long getCreationTimestamp() {
-        return creationTimestamp;
-    }
-
-
 }
