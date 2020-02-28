@@ -1,7 +1,6 @@
 package com.cleanup.todoc.ui;
 
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,20 +17,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.datas.AppDatabase;
 import com.cleanup.todoc.datas.ProjectDao;
 import com.cleanup.todoc.datas.TaskDao;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
-import com.cleanup.todoc.datas.DatabaseClient;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.List;
 
 /**
@@ -45,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * List of all projects available in the application
      */
     private final Project[] allProjects = Project.getAllProjects();
-    //private List<Project> allProjects;
 
     /**
      * List of all current tasks of the application
@@ -53,10 +46,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private final ArrayList<Task> tasks = new ArrayList<>();
 
-    /**
-     * The adapter which handles the list of tasks
-     */
-    private final TasksAdapter adapter = new TasksAdapter(tasks, this);
 
     /**
      * The sort method to be used to display tasks
@@ -98,10 +87,14 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
 
-
     public TaskDao taskDao;
     public ProjectDao projectDao;
+    private AppDatabase appDatabase;
 
+    /**
+     * The adapter which handles the list of tasks
+     */
+    private final TasksAdapter adapter = new TasksAdapter(tasks, this);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,8 +102,10 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
         setContentView(R.layout.activity_main);
 
-        taskDao = AppDatabase.getInstance(this).taskDao();
-        projectDao = AppDatabase.getInstance(this).projectDao();
+        appDatabase = AppDatabase.getInstance(this);
+        taskDao = appDatabase.taskDao();
+        projectDao = appDatabase.projectDao();
+
 
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
@@ -126,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         });
 
 
-        //getTasks();
-        //getProjects();
+        getTasks();
+        getProjects();
 
         Log.e("Main Activity", "onCreate");
     }
@@ -166,22 +161,16 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     private void getTasks() {
-        Log.e("Main Activity", "getTasks");
         //tasks.add(task);
-        Executor myExecutor = Executors.newSingleThreadExecutor();
-        myExecutor.execute(()->taskDao.getAllTasks());
+        List<Task> taskList = appDatabase.taskDao().getAllTasks();
+        Log.e("Main Activity", "getTasks: " + taskList.size());
     }
 
-    private void getProjects(){
-        Log.e("Main Activity", "getProject");
+    private void getProjects() {
+         Project.getAllProjects();
+        Log.e("Main Activity", "getProject" );
         //tasks.add(task);
-        Executor myExecutor = Executors.newSingleThreadExecutor();
-        myExecutor.execute(()->projectDao.getProjects());
     }
-
-
-
-
 
 
     /**
@@ -212,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
                 //long id = (long) (Math.random() * 50000);
 
-
                 Task task = new Task(
                         taskProject.getId(),
                         taskName,
@@ -224,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 dialogInterface.dismiss();
             }
             // If name has been set, but project has not been set (this should never occur)
-            else{
+            else {
                 dialogInterface.dismiss();
             }
         }
@@ -250,16 +238,21 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         populateDialogSpinner();
     }
 
+
     /**
      * Adds the given task to the list of created tasks.
      *
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        Log.e("Main Activity", "addTask: ");
-        //tasks.add(task);
-        Executor myExecutor = Executors.newSingleThreadExecutor();
-        myExecutor.execute(()->taskDao.insertTask(task));
+        Log.d("Main Activity", "addTask: ");
+        tasks.add(task);
+
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            appDatabase.taskDao().insertTask(task);
+        });
+
+
         updateTasks();
     }
 
