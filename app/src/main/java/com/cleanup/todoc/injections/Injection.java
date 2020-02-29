@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.cleanup.todoc.datas.AppDatabase;
 import com.cleanup.todoc.repositories.ProjectDataRepository;
+import com.cleanup.todoc.repositories.ProjectWithTasksDataRepository;
 import com.cleanup.todoc.repositories.TaskDataRepository;
 
 import java.util.concurrent.Executor;
@@ -21,13 +22,19 @@ public class Injection {
         return new ProjectDataRepository(database.projectDao());
     }
 
+    public static ProjectWithTasksDataRepository provideProjectWithTasksDataSource(Context context) {
+        AppDatabase database = AppDatabase.getInstance(context);
+        return new ProjectWithTasksDataRepository(database.projectWithTasksDao());
+    }
+
     public static Executor provideExecutor(){ return Executors.newSingleThreadExecutor(); }
 
     public static ViewModelFactory provideViewModelFactory(Context context) {
         ProjectDataRepository projectDataSource = provideProjectDataSource(context);
         TaskDataRepository taskDataSource = provideTaskDataSource(context);
+        ProjectWithTasksDataRepository projectWithTasksDataSource = provideProjectWithTasksDataSource(context);
         Executor executor = provideExecutor();
-        return new ViewModelFactory(projectDataSource, taskDataSource, executor);
+        return new ViewModelFactory(projectDataSource, taskDataSource, projectWithTasksDataSource, executor);
     }
 
 

@@ -1,5 +1,6 @@
 package com.cleanup.todoc.datas;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Transaction;
@@ -12,6 +13,6 @@ import java.util.List;
 public interface ProjectWithTasksDao {
     @Transaction
     @Query("SELECT * FROM projects")
-    public List<ProjectWithTasks> getProjectsWithTasks();
+    LiveData<List<ProjectWithTasks>> getProjectsWithTasks();
 
 }

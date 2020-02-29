@@ -20,6 +20,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract ProjectDao projectDao();
     public abstract TaskDao taskDao();
+    public abstract ProjectWithTasksDao projectWithTasksDao();
 
 
     public static AppDatabase getInstance(Context context) {

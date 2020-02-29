@@ -17,11 +17,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
  *
  * @author Gaëtan HERFRAY
  */
-@Entity(tableName = "tasks"/*,
-        foreignKeys = @ForeignKey(entity = Project.class,
-                parentColumns = "id",
-                childColumns = "project_id",
-                onDelete = CASCADE)*/)
+@Entity(tableName = "tasks")
 public class Task {
     /**
      * The unique identifier of the task

@@ -10,7 +10,7 @@ public class ProjectWithTasks {
     public Project project;
     @Relation(
             parentColumn = "id",
-            entityColumn = "projectId"
+            entityColumn = "project_id"
     )
     public List<Task> tasks;
 
