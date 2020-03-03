@@ -22,6 +22,7 @@ import com.cleanup.todoc.R;
 import com.cleanup.todoc.injections.Injection;
 import com.cleanup.todoc.injections.ViewModelFactory;
 import com.cleanup.todoc.model.Project;
+import com.cleanup.todoc.model.ProjectWithTasks;
 import com.cleanup.todoc.model.Task;
 
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     private TasksAdapter adapter; // The adapter which handles the list of tasks
 
-    private List<Project> allProjects = Arrays.asList(Project.getAllProjects()); // List of all projects available in the application
+    private List<ProjectWithTasks> allProjects; // List of all projects available in the application
 
     @Nullable
     public AlertDialog dialog = null; // Dialog to create a new task
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         todocViewModel.getProjects().observe(this, this::updateProjects);
     }
 
-    private void updateProjects(List<Project> projects) {
+    private void updateProjects(List<ProjectWithTasks> projects) {
         allProjects = projects;
     }
 

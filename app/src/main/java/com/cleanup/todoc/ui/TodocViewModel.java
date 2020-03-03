@@ -23,7 +23,7 @@ public class TodocViewModel extends android.arch.lifecycle.ViewModel {
 
     //DATA
     @Nullable
-    private LiveData<List<Project>> currentProject;
+    private LiveData<List<ProjectWithTasks>> currentProject;
 
     public TodocViewModel(ProjectDataRepository projectDataSource, TaskDataRepository taskDataSource, ProjectWithTasksDataRepository projectWithTasksDataSource, Executor executor){
         this.projectDataSource = projectDataSource;
@@ -35,14 +35,14 @@ public class TodocViewModel extends android.arch.lifecycle.ViewModel {
 
     public void init(){
         if (this.currentProject == null){
-            currentProject = projectDataSource.getProjects();
+            currentProject = projectWithTasksDataSource.getProjectWithTasks();
         }
     }
 
 
     // FOR PROJECT
     @Nullable
-    public LiveData<List<Project>> getProjects(){ return this.currentProject;}
+    public LiveData<List<ProjectWithTasks>> getProjects(){ return this.currentProject;}
 
 
     // FOR TASKS
