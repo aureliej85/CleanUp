@@ -3,12 +3,10 @@ package com.cleanup.todoc.injections;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
-
 import com.cleanup.todoc.repositories.ProjectDataRepository;
 import com.cleanup.todoc.repositories.ProjectWithTasksDataRepository;
 import com.cleanup.todoc.repositories.TaskDataRepository;
 import com.cleanup.todoc.ui.TodocViewModel;
-
 import java.util.concurrent.Executor;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {

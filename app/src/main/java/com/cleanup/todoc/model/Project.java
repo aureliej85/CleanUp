@@ -111,9 +111,6 @@ public class Project {
         this.name = name;
     }
 
-    //public void setColor(int color) {
-      //  this.color = color;
-    //}
 
     @Override
     @NonNull

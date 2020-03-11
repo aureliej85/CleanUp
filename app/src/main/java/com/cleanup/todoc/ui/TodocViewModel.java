@@ -3,7 +3,6 @@ package com.cleanup.todoc.ui;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.Nullable;
 
-import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.ProjectWithTasks;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repositories.ProjectDataRepository;
